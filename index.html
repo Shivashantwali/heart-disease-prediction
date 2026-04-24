@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Heart Disease Prediction</title>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+body {
+    background: linear-gradient(135deg, #ff7e5f, #ff6a88);
+    font-family: Arial;
+}
+
+.main-card {
+    width: 450px;
+    margin: 40px auto;
+    padding: 25px;
+    border-radius: 20px;
+    background: rgba(255,255,255,0.3);
+    backdrop-filter: blur(20px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+h2 {
+    text-align: center;
+}
+
+input, select {
+   input, select {
+    width: 100%;
+    padding: 14px;
+    margin: 8px 0;
+    border-radius: 12px;
+    border: none;
+    font-size: 14px;
+    height: 48px;   /* 🔥 THIS FIXES SIZE */
+    box-sizing: border-box;
+}
+}
+
+button {
+    width: 100%;
+    padding: 14px;
+    border-radius: 30px;
+    background: linear-gradient(to right, red, orange);
+    color: white;
+    border: none;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.analysis {
+    width: 90%;
+    margin: auto;
+    margin-top: 20px;
+    
+}
+
+canvas {
+    background: white;
+    border-radius: 10px;
+    margin-top: 20px;
+}
+label {
+    font-size: 13px;
+    font-weight: bold;
+    color: #333;
+}
+</style>
+
+</head>
+
+<body>
+
+<a href="{{ url_for('logout') }}" class="logout-btn">Logout</a>
+
+<div class="main-card">
+
+<h2>❤️ Heart Disease Prediction</h2>
+
+<form method="POST">
+
+<label>Age</label>
+<input name="age">
+
+<label>Gender</label>
+<select name="sex">
+<option value="1">Male</option>
+<option value="0">Female</option>
+</select>
+
+<label>Chest Pain Type</label>
+<select name="cp">
+<option value="0">Typical Angina</option>
+<option value="1">Atypical Angina</option>
+<option value="2">Non-anginal Pain</option>
+<option value="3">Asymptomatic</option>
+</select>
+
+<label>Resting Blood Pressure (mm Hg)</label>
+<input name="trestbps">
+
+<label>Cholesterol (mg/dl)</label>
+<input name="chol">
+
+<label>Fasting Blood Sugar</label>
+<select name="fbs">
+<option value="1">> 120 mg/dl (High)</option>
+<option value="0">≤ 120 mg/dl (Normal)</option>
+</select>
+
+<label>ECG Result</label>
+<select name="restecg">
+<option value="0">Normal ECG</option>
+<option value="1">ST-T Abnormality</option>
+<option value="2">Left Ventricular Hypertrophy</option>
+</select>
+
+<label>Maximum Heart Rate</label>
+<input name="thalach">
+
+<label>Exercise Induced Angina</label>
+<select name="exang">
+<option value="1">Yes (Pain Present)</option>
+<option value="0">No (No Pain)</option>
+</select>
+
+<label>ST Depression (Oldpeak)</label>
+<input name="oldpeak">
+
+<label>Slope of ST Segment</label>
+<select name="slope">
+<option value="0">Downsloping (High Risk)</option>
+<option value="1">Flat</option>
+<option value="2">Upsloping (Normal)</option>
+</select>
+
+<label>Number of Major Vessels</label>
+<select name="ca">
+<option value="0">0 Vessels</option>
+<option value="1">1 Vessel</option>
+<option value="2">2 Vessels</option>
+<option value="3">3 Vessels</option>
+</select>
+
+<label>Thalassemia</label>
+<select name="thal">
+<option value="1">Normal</option>
+<option value="2">Fixed Defect (Old Damage)</option>
+<option value="3">Reversible Defect (Temporary Issue)</option>
+</select>
+
+<button>Predict</button>
+
+</form>
+{% if prediction_text %}
+<div style="margin-top:15px; background:white; padding:10px; border-radius:10px;">
+<b>{{ prediction_text }}</b>
+
+<div style="background:#ddd; height:10px; border-radius:10px; margin-top:10px;">
+<div style="width: {{ risk }}%; height:10px; background:red;"></div>
+</div>
+
+</div>
+{% endif %}
+
+<p>
+{% if prediction_text and 'High' in prediction_text %}
+⚠️ Patient shows higher risk. Recommend medical checkup.
+{% elif prediction_text %}
+✅ Patient condition looks normal.
+{% endif %}
+</p>
+
+</div>
+
+
+<!-- LIVE ANALYSIS -->
+<div class="analysis">
+
+<canvas id="barChart"></canvas>
+<canvas id="pieChart"></canvas>
+<canvas id="lineChart"></canvas>
+
+</div>
+
+<script>
+
+let data = {{ data|tojson if data else [] }};
+
+if (data.length > 0) {
+
+let labels = ["Age","BP","Chol","HR"];
+
+let values = [data[0], data[3], data[4], data[7]];
+
+// BAR
+new Chart(document.getElementById("barChart"), {
+    type: 'bar',
+    data: {
+        labels: labels,
+        datasets: [{
+            label: "Health Parameters",
+            data: values,
+            backgroundColor: ["red","blue","green","orange"]
+        }]
+    }
+});
+
+// PIE
+new Chart(document.getElementById("pieChart"), {
+    type: 'pie',
+    data: {
+        labels: labels,
+        datasets: [{
+            data: values,
+            backgroundColor: ["red","blue","green","orange"]
+        }]
+    }
+});
+
+// LINE (LIVE TREND)
+new Chart(document.getElementById("lineChart"), {
+    type: 'line',
+    data: {
+        labels: labels,
+        datasets: [{
+            label: "Trend",
+            data: values,
+            borderColor: "red",
+            fill: false
+        }]
+    }
+});
+
+}
+
+</script>
+
+</body>
+</html>

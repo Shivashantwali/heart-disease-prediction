@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Login</title>
+
+<style>
+* {
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+body {
+    height:100vh;
+    background: linear-gradient(135deg,#ff758c,#ff7eb3);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+/* GLASS CARD */
+.card {
+    width:350px;
+    padding:30px;
+    border-radius:20px;
+    background: rgba(255,255,255,0.2);
+    backdrop-filter: blur(20px);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+    text-align:center;
+    color:white;
+}
+
+/* TITLE */
+h2 {
+    margin-bottom:20px;
+}
+
+/* INPUT FIELD */
+.input-box {
+    position:relative;
+    margin:15px 0;
+}
+
+.input-box input {
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:10px;
+    outline:none;
+    font-size:14px;
+}
+
+/* BUTTON */
+button {
+    width:100%;
+    padding:12px;
+    margin-top:15px;
+    border:none;
+    border-radius:25px;
+    background: linear-gradient(135deg,#ff416c,#ff4b2b);
+    color:white;
+    font-size:16px;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+button:hover {
+    transform:scale(1.05);
+}
+
+/* ERROR */
+.error {
+    margin-top:10px;
+    color:yellow;
+}
+
+/* FOOTER */
+.footer {
+    margin-top:15px;
+    font-size:13px;
+    opacity:0.8;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="card">
+
+<h2>🔐 Login</h2>
+
+<form method="post">
+
+<div class="input-box">
+<input type="text" name="username" placeholder="Enter Username" required>
+</div>
+
+<div class="input-box">
+<input type="password" name="password" placeholder="Enter Password" required>
+</div>
+
+<button>Login</button>
+
+</form>
+
+{% if error %}
+<p class="error">{{ error }}</p>
+{% endif %}
+
+
+
+</div>
+
+</body>
+</html>
